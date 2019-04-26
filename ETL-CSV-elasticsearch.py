@@ -10,10 +10,9 @@ the line
 """
 import json
 
-
+import pandas as pd
 def open_and_read(filename):
     # Open the files as csv_file variable
-    song_dict = []
     with open(filename) as csv_file:
 
         data_from_file = csv_file.readlines()[1]
@@ -21,20 +20,42 @@ def open_and_read(filename):
         return data_from_file
 def clean(data):
     for pos,word in enumerate(data):
-        # print('hit')
-        if data[pos -1] == '"' and word == '"' or data[pos -1] == '"' and word == '[' or data[pos -1] == '"' and word == ']':
+        if data[pos -1] == '"' and word == '"' or data[pos -1] == '"' and word == '[' or data[pos -1] == '"' and word == ']' :
             del data[pos -1]
         if  data[pos -1] == ']' and word == '"':
-            print('hit')
             del data[pos]    
         
-    return ''.join(data)
+    data =  ''.join(data)
+    data = data.strip("").strip("'")
+    return data
+def get_lyric_and_indices(str):
+    start = 0
+    stop = 0
+    for i in range(len(cleaned_file)):
+        if cleaned_file[i-1] == ',' and cleaned_file[i] == '[':
+            start = i 
+        if cleaned_file[i-1] == '}' and cleaned_file[i]== ']':
+            stop = i+1
+    str_lyrics= cleaned_file[start:stop]
+    return(start,stop,eval(str_lyrics))
+    
+def jsonify(cleaned_file):
+    clean_dict = {}
+    # print(cleaned_file)
+    begin,end,lyrics =(get_lyric_and_indices(cleaned_file))
+
+    # print(''.join(str_lyrics))
+    
+
+# 4-6
 
 
-
-def 
+# def load(data):
+#     pass
 
 
 if __name__ == "__main__":
     file_loaded = open_and_read('./DataSet.csv')
     cleaned_file = clean(file_loaded)
+    jsonify(cleaned_file)
+    
