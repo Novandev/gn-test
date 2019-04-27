@@ -38,13 +38,16 @@ def get_lyric_and_indices(str):
             stop = i+1
     str_lyrics= cleaned_file[start:stop]
     return(start,stop,eval(str_lyrics))
-    
+
 def jsonify(cleaned_file):
     clean_dict = {}
     # print(cleaned_file)
     begin,end,lyrics =(get_lyric_and_indices(cleaned_file))
+    top_half = cleaned_file[:begin]
 
-    # print(''.join(str_lyrics))
+
+    print({'title': top_half.split(',')[0], 'artist': top_half.split(',')[1], 'duration':top_half.split(',')[2]})
+    
     
 
 # 4-6
