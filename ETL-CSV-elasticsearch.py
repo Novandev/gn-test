@@ -11,42 +11,55 @@ the line
 import json
 
 import pandas as pd
-def open_and_read(filename):
-    # Open the files as csv_file variable
-    with open(filename) as csv_file:
 
-        data_from_file = csv_file.readlines()[1]
-        data_from_file = list(data_from_file)
-        return data_from_file
+
+
+
+def open_and_read(filepath):
+    # Open the files as csv_file variable
+    data_df =pd.read_csv(filepath)
 def clean(data):
-    for pos,word in enumerate(data):
-        if data[pos -1] == '"' and word == '"' or data[pos -1] == '"' and word == '[' or data[pos -1] == '"' and word == ']' :
+    data = list(data)
+    for pos,char in enumerate(data):
+        if data[pos -1] == '"' and char == '"' or data[pos -1] == '"' and char == '[' or data[pos -1] == '"' and char == ']' :
             del data[pos -1]
-        if  data[pos -1] == ']' and word == '"':
-            del data[pos]    
+        if  data[pos -1] == ']' and char == '"':
+            del data[pos]   
+            
         
     data =  ''.join(data)
     data = data.strip("").strip("'")
+    # print(data)
     return data
 def get_lyric_and_indices(str):
-    start = 0
-    stop = 0
+    starts = []
+    stops = []
+    lyrics_list = []
+    
     for i in range(len(cleaned_file)):
         if cleaned_file[i-1] == ',' and cleaned_file[i] == '[':
-            start = i 
+            # print(i)
+            starts.append(i) 
         if cleaned_file[i-1] == '}' and cleaned_file[i]== ']':
-            stop = i+1
-    str_lyrics= cleaned_file[start:stop]
-    return(start,stop,eval(str_lyrics))
+            stops.append(i+1)
+            # print(i) 
+
+    for i in range(len(stops)):
+        lyrics_list.append(cleaned_file[starts[i]:stops[i]].strip())
+
+    # print('{} {}'.format(len(starts), len(stops)))
+    lyrics_list = [eval(x) for x in lyrics_list]
+
+    return(starts,stops,lyrics_list)
 
 def jsonify(cleaned_file):
     clean_dict = {}
     # print(cleaned_file)
-    begin,end,lyrics =(get_lyric_and_indices(cleaned_file))
-    top_half = cleaned_file[:begin]
+    (get_lyric_and_indices(cleaned_file))
+    # print(beginnings)
 
 
-    print({'title': top_half.split(',')[0], 'artist': top_half.split(',')[1], 'duration':top_half.split(',')[2]})
+    # print({'title': top_half.split(',')[0], 'artist': top_half.split(',')[1], 'duration':top_half.split(',')[2]})
     
     
 
@@ -58,7 +71,8 @@ def jsonify(cleaned_file):
 
 
 if __name__ == "__main__":
-    file_loaded = open_and_read('./DataSet.csv')
-    cleaned_file = clean(file_loaded)
-    jsonify(cleaned_file)
+    # file_loaded = open_and_read('./DataSet.csv')
+    print(pd.read_csv('./DataSet.csv'))
+    # cleaned_file = clean(file_loaded)
+    # jsonify(cleaned_file)
     
